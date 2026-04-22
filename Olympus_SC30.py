@@ -159,7 +159,8 @@ class SC30Camera:
 
         # self._set_display_mode('IS_CM_DIB') # TODO does not work right? I am pretty sure this is not necessary to do anyway for the SC30
         self._set_color_mode( colormode.upper() )
-        self._set_hardware_binning( int(binning) )
+        for i in range(int(binning)):
+            self._set_hardware_binning( i+1 ) # camera seems to prefer to increment binning slowly? Doesn't like going from 1 to 4 after acquiring an image.
         self._set_exposure(exposure_ms)
         self._allocate_memory()
         self._prev_set_time = time.time()
