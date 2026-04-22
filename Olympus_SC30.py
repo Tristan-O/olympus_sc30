@@ -133,9 +133,10 @@ class SC30Camera:
         """
         if not self._opened:
             # Init camera
-            uEye.is_InitCamera(self.hCam)
+            self.hCam = uEye.is_InitCamera(self.hCam)
             self._opened = True
             self._prev_set_time = time.time()
+            self._set_AOI( ) # this should only happen once, I believe
         
         if set_defaults:
             self.set()
@@ -156,7 +157,6 @@ class SC30Camera:
         if self._streaming:
             self.stop_grab_thread()
 
-        self._set_AOI( )
         # self._set_display_mode('IS_CM_DIB') # TODO does not work right? I am pretty sure this is not necessary to do anyway for the SC30
         self._set_color_mode( colormode.upper() )
         self._set_hardware_binning( int(binning) )
@@ -394,14 +394,14 @@ class SC30Camera:
 # is_PixelClock ( ... )        0'''
 
 if __name__ == '__main__':
-    import matplotlib.pyplot as plt
     sc30 = SC30Camera(verbosity='high')
     sc30.open(False)
-    print(repr(sc30.get_camera_info()))
+    print(sc30.get_camera_info())
     sc30.set(binning=1, exposure_ms=200)
 
     arr = sc30.capture_single_frame()
     print('Image mean value:', np.mean(arr))
 
+    import matplotlib.pyplot as plt
     plt.matshow(arr, cmap='gray')
     plt.show()

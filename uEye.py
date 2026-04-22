@@ -1,4 +1,5 @@
 # uEye.py
+from __future__ import annotations
 import ctypes as ct
 import numpy as np
 HIDS    = ct.c_int
@@ -640,10 +641,10 @@ def is_AOI(hCam:HIDS, x_off:int=0, y_off:int=0, x_size:int=0, y_size:int=0):
 
     Args:
         hCam: Camera handle.
-        x_off: AOI x-offset in pixels.
-        y_off: AOI y-offset in pixels.
-        x_size: AOI width in pixels.
-        y_size: AOI height in pixels.
+        x_off: AOI x-offset in pixels. (s32X)
+        y_off: AOI y-offset in pixels. (s32Y)
+        x_size: AOI width in pixels. (s32Width)
+        y_size: AOI height in pixels. (s32Height)
 
     Returns:
         dict: AOI rectangle after the driver call.
