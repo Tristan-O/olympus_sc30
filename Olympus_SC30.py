@@ -51,7 +51,7 @@ class SC30Camera:
         self.binning = 1
         self.depth   = 1
         self.bpp     = 8
-        self.exposure = None
+        self._exposure_ms = None
 
         self.verbosity = verbosity
         if self.verbosity is None:
@@ -105,6 +105,16 @@ class SC30Camera:
             return self._WIDTH_PX//self.binning-4
         else:
             raise ValueError('Binning value should only be 1, 2, 3, or 4!')
+    @property
+    def exposure_ms(self):
+        """Return current exposure in milliseconds, if known."""
+        return self._exposure_ms
+    @property
+    def exposure_s(self):
+        """Return current exposure in seconds, if known."""
+        if self._exposure_ms is None:
+            return None
+        return self._exposure_ms / 1000.0
     @_verbose
     def get_camera_info(self):
         """
@@ -130,13 +140,13 @@ class SC30Camera:
         if set_defaults:
             self.set()
     @_verbose
-    def set(self, colormode:str='MONO8', binning:int=1, exposure:float=0):
+    def set(self, colormode:str='MONO8', binning:int=1, exposure_ms:float=0):
         """Apply primary acquisition settings and (re)allocate image memory.
 
         Args:
             colormode: uEye monochrome color mode suffix (for example ``MONO8``).
             binning: Hardware binning factor in each dimension.
-            exposure: Exposure time in milliseconds. ``0`` queries current value.
+            exposure_ms: Exposure time in milliseconds. ``0`` queries current value.
 
         Raises:
             NameError: If the camera has not been opened.
@@ -150,7 +160,7 @@ class SC30Camera:
         # self._set_display_mode('IS_CM_DIB') # TODO does not work right? I am pretty sure this is not necessary to do anyway for the SC30
         self._set_color_mode( colormode.upper() )
         self._set_hardware_binning( int(binning) )
-        self._set_exposure(exposure)
+        self._set_exposure(exposure_ms)
         self._allocate_memory()
         self._prev_set_time = time.time()
     @_verbose
@@ -243,13 +253,16 @@ class SC30Camera:
         self.mem_id = None
         self.memory_allocated = False
     @_verbose
-    def _set_exposure(self, ms:float):
+    def _set_exposure(self, ms:float=0):
         """Set or query exposure and cache the resulting value.
 
         Args:
-            ms: Desired exposure in milliseconds; ``0`` reads current exposure.
+            ms: Desired exposure in milliseconds; ``0`` reads current exposure and updates internally without overriding.
         """
-        self.exposure = uEye.is_Exposure(self.hCam, ms)
+        if ms:
+            self._exposure_ms = uEye.is_Exposure(self.hCam, ms) # set exposure if non-zero
+        self._exposure_ms = uEye.is_Exposure(self.hCam, 0) # read back exposure
+        return self.exposure_ms
     @_verbose
     def _grab_frame(self):
         """Read the latest image memory into a detached NumPy array."""
@@ -385,7 +398,7 @@ if __name__ == '__main__':
     sc30 = SC30Camera(verbosity='high')
     sc30.open(False)
     print(repr(sc30.get_camera_info()))
-    sc30.set(binning=1, exposure=200)
+    sc30.set(binning=1, exposure_ms=200)
 
     arr = sc30.capture_single_frame()
     print('Image mean value:', np.mean(arr))
