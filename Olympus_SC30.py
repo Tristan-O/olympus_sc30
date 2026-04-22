@@ -39,6 +39,26 @@ class SC30Camera:
     _HEIGHT_PX = 1532
     def __init__(self, ring_size=4, verbosity:str=None):
         """Initialize camera state, acquisition settings, and ring buffer.
+        I think the camera/sensor information can be found [here](https://www.1stvision.com/cameras/IDS/IDS-manuals/uEye_Manual/sensor-data-ui-146x.html).
+        (That matches the expected pixel size (3.20 um, square), sensor size (2048x1536 px), and number of bits (10).
+        This camera is CMOS.)
+
+        Application notes from IDS:
+
+        - Master gain is digitally calculated on the sensor and may cause artifacts. Instead use RGB gains first (e.g. by setting a minimum value in the Auto white balance function).
+
+        - The sensor does not allow changes of exposure time while in trigger mode. If is_Exposure() is called in trigger mode, the sensor will temporarily switch to freerun. This results in a longer delay time (depending on the frame rate) at function call.
+
+        - Sensor speed does not increase for effective horizontal resolution <256 pixels.
+
+        - Changing the frame rate in trigger mode has no effect. The maximum possible exposure time cannot be increased in this way.
+
+        - With horizontal 4x binning, a dark column appears at the right-hand image border, which is caused by the sensor.
+            - I have observed this. Though it remains when switching from 4x back to 1x.
+
+        - For hardware reasons, the sensor can not perform more than 3x vertical binning. When 4x or 6x binning is activated in the uEye software, the driver uses a combination of binning and subsampling instead. Therefore, the image will not become brighter when 4x or 6x horizontal binning is activated.
+
+        - The brightness of the first and last line might deviate due to the sensor.
 
         Args:
             ring_size: Number of frame slots to retain in the circular buffer.
