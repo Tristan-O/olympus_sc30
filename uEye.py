@@ -111,6 +111,130 @@ IS_EXPOSURE_CMD_SET_EXPOSURE = 12
 IS_EXPOSURE_CMD_GET_CAPS = 1
 IS_EXPOSURE_CMD_GET_EXPOSURE_RANGE = 16
 
+#  Sensor Types
+IS_SENSOR_INVALID         = 0x0000
+
+## CMOS Sensors
+IS_SENSOR_UI141X_M        = 0x0001      # VGA rolling shutter, monochrome
+IS_SENSOR_UI141X_C        = 0x0002      # VGA rolling shutter, color
+IS_SENSOR_UI144X_M        = 0x0003      # SXGA rolling shutter, monochrome
+IS_SENSOR_UI144X_C        = 0x0004      # SXGA rolling shutter, SXGA color
+IS_SENSOR_UI154X_M        = 0x0030      # SXGA rolling shutter, monochrome
+IS_SENSOR_UI154X_C        = 0x0031      # SXGA rolling shutter, color
+IS_SENSOR_UI145X_C        = 0x0008      # UXGA rolling shutter, color
+IS_SENSOR_UI146X_C        = 0x000a      # QXGA rolling shutter, color
+IS_SENSOR_UI148X_M        = 0x000b      # 5MP rolling shutter, monochrome
+IS_SENSOR_UI148X_C        = 0x000c      # 5MP rolling shutter, color
+IS_SENSOR_UI121X_M        = 0x0010      # VGA global shutter, monochrome
+IS_SENSOR_UI121X_C        = 0x0011      # VGA global shutter, VGA color
+IS_SENSOR_UI122X_M        = 0x0012      # WVGA global shutter, monochrome
+IS_SENSOR_UI122X_C        = 0x0013      # WVGA global shutter, color
+IS_SENSOR_UI164X_C        = 0x0015      # SXGA rolling shutter, color
+IS_SENSOR_UI155X_C        = 0x0017      # UXGA rolling shutter, color
+IS_SENSOR_UI1223_M        = 0x0018      # WVGA global shutter, monochrome
+IS_SENSOR_UI1223_C        = 0x0019      # WVGA global shutter, color
+IS_SENSOR_UI149X_M        = 0x003E      # 10MP rolling shutter, monochrome
+IS_SENSOR_UI149X_C        = 0x003F      # 10MP rolling shutter, color
+IS_SENSOR_UI1225_M        = 0x0022      # WVGA global shutter, monochrome, LE model
+IS_SENSOR_UI1225_C        = 0x0023      # WVGA global shutter, color, LE model
+IS_SENSOR_UI1645_C        = 0x0025      # SXGA rolling shutter, color, LE model
+IS_SENSOR_UI1555_C        = 0x0027      # UXGA rolling shutter, color, LE model
+IS_SENSOR_UI1545_M        = 0x0028      # SXGA rolling shutter, monochrome, LE model
+IS_SENSOR_UI1545_C        = 0x0029      # SXGA rolling shutter, color, LE model
+IS_SENSOR_UI1455_C        = 0x002B      # UXGA rolling shutter, color, LE model
+IS_SENSOR_UI1465_C        = 0x002D      # QXGA rolling shutter, color, LE model
+IS_SENSOR_UI1485_M        = 0x002E      # 5MP rolling shutter, monochrome, LE model
+IS_SENSOR_UI1485_C        = 0x002F      # 5MP rolling shutter, color, LE model
+IS_SENSOR_UI1495_M        = 0x0040      # 10MP rolling shutter, monochrome, LE model
+IS_SENSOR_UI1495_C        = 0x0041      # 10MP rolling shutter, color, LE model
+IS_SENSOR_UI112X_M        = 0x004A      # 0768x576, HDR sensor, monochrome
+IS_SENSOR_UI112X_C        = 0x004B      # 0768x576, HDR sensor, color
+IS_SENSOR_UI1008_M        = 0x004C
+IS_SENSOR_UI1008_C        = 0x004D
+IS_SENSOR_UIF005_M        = 0x0076 
+IS_SENSOR_UIF005_C        = 0x0077 
+IS_SENSOR_UI1005_M        = 0x020A 
+IS_SENSOR_UI1005_C        = 0x020B
+IS_SENSOR_UI1240_M        = 0x0050      # SXGA global shutter, monochrome
+IS_SENSOR_UI1240_C        = 0x0051      # SXGA global shutter, color
+IS_SENSOR_UI1240_NIR      = 0x0062      # SXGA global shutter, NIR
+IS_SENSOR_UI1240LE_M      = 0x0054      # SXGA global shutter, monochrome, single board
+IS_SENSOR_UI1240LE_C      = 0x0055      # SXGA global shutter, color, single board
+IS_SENSOR_UI1240LE_NIR    = 0x0064      # SXGA global shutter, NIR, single board
+IS_SENSOR_UI1240ML_M      = 0x0066      # SXGA global shutter, monochrome, single board
+IS_SENSOR_UI1240ML_C      = 0x0067      # SXGA global shutter, color, single board
+IS_SENSOR_UI1240ML_NIR    = 0x0200      # SXGA global shutter, NIR, single board
+IS_SENSOR_UI1243_M_SMI    = 0x0078
+IS_SENSOR_UI1243_C_SMI    = 0x0079
+IS_SENSOR_UI1543_M        = 0x0032      # SXGA rolling shutter, monochrome, single board
+IS_SENSOR_UI1543_C        = 0x0033      # SXGA rolling shutter, color, single board
+IS_SENSOR_UI1544_M        = 0x003A      # SXGA rolling shutter, monochrome, single board
+IS_SENSOR_UI1544_C        = 0x003B      # SXGA rolling shutter, color, single board
+IS_SENSOR_UI1543_M_WO     = 0x003C      # SXGA rolling shutter, monochrome, single board
+IS_SENSOR_UI1543_C_WO     = 0x003D      # SXGA rolling shutter, color, single board
+IS_SENSOR_UI1453_C        = 0x0035      # UXGA rolling shutter, color, single board
+IS_SENSOR_UI1463_C        = 0x0037      # QXGA rolling shutter, color, single board
+IS_SENSOR_UI1483_M        = 0x0038      # QSXG rolling shutter, monochrome, single board
+IS_SENSOR_UI1483_C        = 0x0039      # QSXG rolling shutter, color, single board
+IS_SENSOR_UI1493_M        = 0x004E      # 10Mp rolling shutter, monochrome, single board
+IS_SENSOR_UI1493_C        = 0x004F      # 10MP rolling shutter, color, single board
+IS_SENSOR_UI1463_M_WO     = 0x0044      # QXGA rolling shutter, monochrome, single board
+IS_SENSOR_UI1463_C_WO     = 0x0045      # QXGA rolling shutter, color, single board
+IS_SENSOR_UI1553_C_WN     = 0x0047      # UXGA rolling shutter, color, single board
+IS_SENSOR_UI1483_M_WO     = 0x0048      # QSXGA rolling shutter, monochrome, single board
+IS_SENSOR_UI1483_C_WO     = 0x0049      # QSXGA rolling shutter, color, single board
+IS_SENSOR_UI1580_M        = 0x005A      # 5MP rolling shutter, monochrome
+IS_SENSOR_UI1580_C        = 0x005B      # 5MP rolling shutter, color
+IS_SENSOR_UI1580LE_M      = 0x0060      # 5MP rolling shutter, monochrome, single board
+IS_SENSOR_UI1580LE_C      = 0x0061      # 5MP rolling shutter, color, single board
+IS_SENSOR_UI1360M         = 0x0068      # 2.2MP global shutter, monochrome
+IS_SENSOR_UI1360C         = 0x0069      # 2.2MP global shutter, color
+IS_SENSOR_UI1360NIR       = 0x0212      # 2.2MP global shutter, NIR
+IS_SENSOR_UI1370M         = 0x006A      # 4.2MP global shutter, monochrome
+IS_SENSOR_UI1370C         = 0x006B      # 4.2MP global shutter, color
+IS_SENSOR_UI1370NIR       = 0x0214      # 4.2MP global shutter, NIR
+IS_SENSOR_UI1250_M        = 0x006C      # 2MP global shutter, monochrome
+IS_SENSOR_UI1250_C        = 0x006D      # 2MP global shutter, color
+IS_SENSOR_UI1250_NIR      = 0x006E      # 2MP global shutter, NIR
+IS_SENSOR_UI1250LE_M      = 0x0070      # 2MP global shutter, monochrome, single board
+IS_SENSOR_UI1250LE_C      = 0x0071      # 2MP global shutter, color, single board
+IS_SENSOR_UI1250LE_NIR    = 0x0072      # 2MP global shutter, NIR, single board
+IS_SENSOR_UI1250ML_M      = 0x0074      # 2MP global shutter, monochrome, single board
+IS_SENSOR_UI1250ML_C      = 0x0075      # 2MP global shutter, color, single board
+IS_SENSOR_UI1250ML_NIR    = 0x0202      # 2MP global shutter, NIR, single board
+IS_SENSOR_XS              = 0x020B      # 5MP rolling shutter, color
+IS_SENSOR_UI1493_M_AR     = 0x0204
+IS_SENSOR_UI1493_C_AR     = 0x0205
+
+
+## CCD Sensors
+IS_SENSOR_UI223X_M        = 0x0080      # Sony CCD sensor - XGA monochrome
+IS_SENSOR_UI223X_C        = 0x0081      # Sony CCD sensor - XGA color
+IS_SENSOR_UI241X_M        = 0x0082      # Sony CCD sensor - VGA monochrome
+IS_SENSOR_UI241X_C        = 0x0083      # Sony CCD sensor - VGA color
+IS_SENSOR_UI234X_M        = 0x0084      # Sony CCD sensor - SXGA monochrome
+IS_SENSOR_UI234X_C        = 0x0085      # Sony CCD sensor - SXGA color
+IS_SENSOR_UI221X_M        = 0x0088      # Sony CCD sensor - VGA monochrome
+IS_SENSOR_UI221X_C        = 0x0089      # Sony CCD sensor - VGA color
+IS_SENSOR_UI231X_M        = 0x0090      # Sony CCD sensor - VGA monochrome
+IS_SENSOR_UI231X_C        = 0x0091      # Sony CCD sensor - VGA color
+IS_SENSOR_UI222X_M        = 0x0092      # Sony CCD sensor - CCIR / PAL monochrome
+IS_SENSOR_UI222X_C        = 0x0093      # Sony CCD sensor - CCIR / PAL color
+IS_SENSOR_UI224X_M        = 0x0096      # Sony CCD sensor - SXGA monochrome
+IS_SENSOR_UI224X_C        = 0x0097      # Sony CCD sensor - SXGA color
+IS_SENSOR_UI225X_M        = 0x0098      # Sony CCD sensor - UXGA monochrome
+IS_SENSOR_UI225X_C        = 0x0099      # Sony CCD sensor - UXGA color
+IS_SENSOR_UI214X_M        = 0x009A      # Sony CCD sensor - SXGA monochrome
+IS_SENSOR_UI214X_C        = 0x009B      # Sony CCD sensor - SXGA color
+IS_SENSOR_UI228X_M        = 0x009C      # Sony CCD sensor - QXGA monochrome
+IS_SENSOR_UI228X_C        = 0x009D      # Sony CCD sensor - QXGA color
+IS_SENSOR_UI241X_M_R2     = 0x0182      # Sony CCD sensor - VGA monochrome
+IS_SENSOR_UI251X_M        = 0x0182      # Sony CCD sensor - VGA monochrome
+IS_SENSOR_UI241X_C_R2     = 0x0183      # Sony CCD sensor - VGA color
+IS_SENSOR_UI251X_C        = 0x0183      # Sony CCD sensor - VGA color
+IS_SENSOR_UI2130_M        = 0x019E      # Sony CCD sensor - WXGA monochrome
+IS_SENSOR_UI2130_C        = 0x019F      # Sony CCD sensor - WXGA color
+
 # ---- Return Codes ---- #
 IS_SUCCESS                      = 0
 IS_NO_SUCCESS                   = 1
@@ -511,6 +635,181 @@ class CAMINFO(ct.Structure):
             Select   = self.Select,
             Type     = self.Type,
             Reserved = self.Reserved.decode())
+class SENSORINFO(ct.Structure):
+    _fields_ = [
+        ("SensorID", ct.c_ushort),
+        ("strSensorName", ct.c_char * 32),
+        ("nColorMode", ct.c_char),
+        ("nMaxWidth", ct.c_uint),
+        ("nMaxHeight", ct.c_uint),
+        ("bMasterGain", ct.c_int),
+        ("bRGain", ct.c_int),
+        ("bGGain", ct.c_int),
+        ("bBGain", ct.c_int),
+        ("bGlobShutter", ct.c_int),
+        ("wPixelSize", ct.c_ushort),
+        ("nUpperLeftBayerPixel", ct.c_char),
+        ("Reserved", ct.c_char * 13),
+    ]
+    def to_dict(self):
+        """Convert sensor capabilities/info fields into a Python dictionary."""
+        sensor_id_code = int(self.SensorID)
+        sensor_id_names = {
+            IS_SENSOR_INVALID: "IS_SENSOR_INVALID",
+            IS_SENSOR_UI141X_M: "IS_SENSOR_UI141X_M",
+            IS_SENSOR_UI141X_C: "IS_SENSOR_UI141X_C",
+            IS_SENSOR_UI144X_M: "IS_SENSOR_UI144X_M",
+            IS_SENSOR_UI144X_C: "IS_SENSOR_UI144X_C",
+            IS_SENSOR_UI154X_M: "IS_SENSOR_UI154X_M",
+            IS_SENSOR_UI154X_C: "IS_SENSOR_UI154X_C",
+            IS_SENSOR_UI145X_C: "IS_SENSOR_UI145X_C",
+            IS_SENSOR_UI146X_C: "IS_SENSOR_UI146X_C",
+            IS_SENSOR_UI148X_M: "IS_SENSOR_UI148X_M",
+            IS_SENSOR_UI148X_C: "IS_SENSOR_UI148X_C",
+            IS_SENSOR_UI121X_M: "IS_SENSOR_UI121X_M",
+            IS_SENSOR_UI121X_C: "IS_SENSOR_UI121X_C",
+            IS_SENSOR_UI122X_M: "IS_SENSOR_UI122X_M",
+            IS_SENSOR_UI122X_C: "IS_SENSOR_UI122X_C",
+            IS_SENSOR_UI164X_C: "IS_SENSOR_UI164X_C",
+            IS_SENSOR_UI155X_C: "IS_SENSOR_UI155X_C",
+            IS_SENSOR_UI1223_M: "IS_SENSOR_UI1223_M",
+            IS_SENSOR_UI1223_C: "IS_SENSOR_UI1223_C",
+            IS_SENSOR_UI149X_M: "IS_SENSOR_UI149X_M",
+            IS_SENSOR_UI149X_C: "IS_SENSOR_UI149X_C",
+            IS_SENSOR_UI1225_M: "IS_SENSOR_UI1225_M",
+            IS_SENSOR_UI1225_C: "IS_SENSOR_UI1225_C",
+            IS_SENSOR_UI1645_C: "IS_SENSOR_UI1645_C",
+            IS_SENSOR_UI1555_C: "IS_SENSOR_UI1555_C",
+            IS_SENSOR_UI1545_M: "IS_SENSOR_UI1545_M",
+            IS_SENSOR_UI1545_C: "IS_SENSOR_UI1545_C",
+            IS_SENSOR_UI1455_C: "IS_SENSOR_UI1455_C",
+            IS_SENSOR_UI1465_C: "IS_SENSOR_UI1465_C",
+            IS_SENSOR_UI1485_M: "IS_SENSOR_UI1485_M",
+            IS_SENSOR_UI1485_C: "IS_SENSOR_UI1485_C",
+            IS_SENSOR_UI1495_M: "IS_SENSOR_UI1495_M",
+            IS_SENSOR_UI1495_C: "IS_SENSOR_UI1495_C",
+            IS_SENSOR_UI112X_M: "IS_SENSOR_UI112X_M",
+            IS_SENSOR_UI112X_C: "IS_SENSOR_UI112X_C",
+            IS_SENSOR_UI1008_M: "IS_SENSOR_UI1008_M",
+            IS_SENSOR_UI1008_C: "IS_SENSOR_UI1008_C",
+            IS_SENSOR_UIF005_M: "IS_SENSOR_UIF005_M",
+            IS_SENSOR_UIF005_C: "IS_SENSOR_UIF005_C",
+            IS_SENSOR_UI1005_M: "IS_SENSOR_UI1005_M",
+            IS_SENSOR_XS: "IS_SENSOR_UI1005_C|IS_SENSOR_XS",
+            IS_SENSOR_UI1240_M: "IS_SENSOR_UI1240_M",
+            IS_SENSOR_UI1240_C: "IS_SENSOR_UI1240_C",
+            IS_SENSOR_UI1240_NIR: "IS_SENSOR_UI1240_NIR",
+            IS_SENSOR_UI1240LE_M: "IS_SENSOR_UI1240LE_M",
+            IS_SENSOR_UI1240LE_C: "IS_SENSOR_UI1240LE_C",
+            IS_SENSOR_UI1240LE_NIR: "IS_SENSOR_UI1240LE_NIR",
+            IS_SENSOR_UI1240ML_M: "IS_SENSOR_UI1240ML_M",
+            IS_SENSOR_UI1240ML_C: "IS_SENSOR_UI1240ML_C",
+            IS_SENSOR_UI1240ML_NIR: "IS_SENSOR_UI1240ML_NIR",
+            IS_SENSOR_UI1243_M_SMI: "IS_SENSOR_UI1243_M_SMI",
+            IS_SENSOR_UI1243_C_SMI: "IS_SENSOR_UI1243_C_SMI",
+            IS_SENSOR_UI1543_M: "IS_SENSOR_UI1543_M",
+            IS_SENSOR_UI1543_C: "IS_SENSOR_UI1543_C",
+            IS_SENSOR_UI1544_M: "IS_SENSOR_UI1544_M",
+            IS_SENSOR_UI1544_C: "IS_SENSOR_UI1544_C",
+            IS_SENSOR_UI1543_M_WO: "IS_SENSOR_UI1543_M_WO",
+            IS_SENSOR_UI1543_C_WO: "IS_SENSOR_UI1543_C_WO",
+            IS_SENSOR_UI1453_C: "IS_SENSOR_UI1453_C",
+            IS_SENSOR_UI1463_C: "IS_SENSOR_UI1463_C",
+            IS_SENSOR_UI1483_M: "IS_SENSOR_UI1483_M",
+            IS_SENSOR_UI1483_C: "IS_SENSOR_UI1483_C",
+            IS_SENSOR_UI1493_M: "IS_SENSOR_UI1493_M",
+            IS_SENSOR_UI1493_C: "IS_SENSOR_UI1493_C",
+            IS_SENSOR_UI1463_M_WO: "IS_SENSOR_UI1463_M_WO",
+            IS_SENSOR_UI1463_C_WO: "IS_SENSOR_UI1463_C_WO",
+            IS_SENSOR_UI1553_C_WN: "IS_SENSOR_UI1553_C_WN",
+            IS_SENSOR_UI1483_M_WO: "IS_SENSOR_UI1483_M_WO",
+            IS_SENSOR_UI1483_C_WO: "IS_SENSOR_UI1483_C_WO",
+            IS_SENSOR_UI1580_M: "IS_SENSOR_UI1580_M",
+            IS_SENSOR_UI1580_C: "IS_SENSOR_UI1580_C",
+            IS_SENSOR_UI1580LE_M: "IS_SENSOR_UI1580LE_M",
+            IS_SENSOR_UI1580LE_C: "IS_SENSOR_UI1580LE_C",
+            IS_SENSOR_UI1360M: "IS_SENSOR_UI1360M",
+            IS_SENSOR_UI1360C: "IS_SENSOR_UI1360C",
+            IS_SENSOR_UI1360NIR: "IS_SENSOR_UI1360NIR",
+            IS_SENSOR_UI1370M: "IS_SENSOR_UI1370M",
+            IS_SENSOR_UI1370C: "IS_SENSOR_UI1370C",
+            IS_SENSOR_UI1370NIR: "IS_SENSOR_UI1370NIR",
+            IS_SENSOR_UI1250_M: "IS_SENSOR_UI1250_M",
+            IS_SENSOR_UI1250_C: "IS_SENSOR_UI1250_C",
+            IS_SENSOR_UI1250_NIR: "IS_SENSOR_UI1250_NIR",
+            IS_SENSOR_UI1250LE_M: "IS_SENSOR_UI1250LE_M",
+            IS_SENSOR_UI1250LE_C: "IS_SENSOR_UI1250LE_C",
+            IS_SENSOR_UI1250LE_NIR: "IS_SENSOR_UI1250LE_NIR",
+            IS_SENSOR_UI1250ML_M: "IS_SENSOR_UI1250ML_M",
+            IS_SENSOR_UI1250ML_C: "IS_SENSOR_UI1250ML_C",
+            IS_SENSOR_UI1250ML_NIR: "IS_SENSOR_UI1250ML_NIR",
+            IS_SENSOR_UI1493_M_AR: "IS_SENSOR_UI1493_M_AR",
+            IS_SENSOR_UI1493_C_AR: "IS_SENSOR_UI1493_C_AR",
+            IS_SENSOR_UI223X_M: "IS_SENSOR_UI223X_M",
+            IS_SENSOR_UI223X_C: "IS_SENSOR_UI223X_C",
+            IS_SENSOR_UI241X_M: "IS_SENSOR_UI241X_M",
+            IS_SENSOR_UI241X_C: "IS_SENSOR_UI241X_C",
+            IS_SENSOR_UI234X_M: "IS_SENSOR_UI234X_M",
+            IS_SENSOR_UI234X_C: "IS_SENSOR_UI234X_C",
+            IS_SENSOR_UI221X_M: "IS_SENSOR_UI221X_M",
+            IS_SENSOR_UI221X_C: "IS_SENSOR_UI221X_C",
+            IS_SENSOR_UI231X_M: "IS_SENSOR_UI231X_M",
+            IS_SENSOR_UI231X_C: "IS_SENSOR_UI231X_C",
+            IS_SENSOR_UI222X_M: "IS_SENSOR_UI222X_M",
+            IS_SENSOR_UI222X_C: "IS_SENSOR_UI222X_C",
+            IS_SENSOR_UI224X_M: "IS_SENSOR_UI224X_M",
+            IS_SENSOR_UI224X_C: "IS_SENSOR_UI224X_C",
+            IS_SENSOR_UI225X_M: "IS_SENSOR_UI225X_M",
+            IS_SENSOR_UI225X_C: "IS_SENSOR_UI225X_C",
+            IS_SENSOR_UI214X_M: "IS_SENSOR_UI214X_M",
+            IS_SENSOR_UI214X_C: "IS_SENSOR_UI214X_C",
+            IS_SENSOR_UI228X_M: "IS_SENSOR_UI228X_M",
+            IS_SENSOR_UI228X_C: "IS_SENSOR_UI228X_C",
+            IS_SENSOR_UI241X_M_R2: "IS_SENSOR_UI241X_M_R2|IS_SENSOR_UI251X_M",
+            IS_SENSOR_UI241X_C_R2: "IS_SENSOR_UI241X_C_R2|IS_SENSOR_UI251X_C",
+            IS_SENSOR_UI2130_M: "IS_SENSOR_UI2130_M",
+            IS_SENSOR_UI2130_C: "IS_SENSOR_UI2130_C",
+        }
+        sensor_id_name = sensor_id_names.get(sensor_id_code, f"UNKNOWN({sensor_id_code})")
+
+        color_mode_code = int(self.nColorMode[0]) if self.nColorMode else 0
+        # Sensor-info color mode codes from uEye header semantics.
+        color_mode_names = {
+            0: "INVALID",
+            1: "MONOCHROME",
+            2: "BAYER",
+            4: "CBYCRY",
+        }
+
+        bayer_pixel_code = int(self.nUpperLeftBayerPixel[0]) if self.nUpperLeftBayerPixel else 0
+        # Upper-left Bayer pixel identifiers from uEye sensor info.
+        bayer_pixel_names = {
+            0: "RED",
+            1: "GREEN",
+            2: "BLUE",
+            3: "GREEN2",
+        }
+
+        return dict(
+            SensorID=sensor_id_code,
+            SensorIDCode=sensor_id_code,
+            SensorIDHex=f"0x{sensor_id_code:04X}",
+            SensorIDName=sensor_id_name,
+            strSensorName=self.strSensorName.decode(errors='ignore').strip('\x00').strip(),
+            nColorMode=color_mode_code,
+            nColorModeName=color_mode_names.get(color_mode_code, f"UNKNOWN({color_mode_code})"),
+            nMaxWidth=self.nMaxWidth,
+            nMaxHeight=self.nMaxHeight,
+            bMasterGain=bool(self.bMasterGain),
+            bRGain=bool(self.bRGain),
+            bGGain=bool(self.bGGain),
+            bBGain=bool(self.bBGain),
+            bGlobShutter=bool(self.bGlobShutter),
+            wPixelSize=self.wPixelSize,
+            nUpperLeftBayerPixel=bayer_pixel_code,
+            nUpperLeftBayerPixelName=bayer_pixel_names.get(bayer_pixel_code, f"UNKNOWN({bayer_pixel_code})"),
+            Reserved=self.Reserved[:],
+        )
 class UEYE_CAMERA_INFO(ct.Structure):
     _fields_ = [
         ("dwCameraID", ct.c_uint32),
@@ -598,6 +897,20 @@ def is_GetCameraInfo(hCam:HIDS)->dict:
 
     info = CAMINFO()
     ret = driver.is_GetCameraInfo(hCam, ct.byref(info))
+    uEyeError.test(ret)
+
+    return info.to_dict()
+def is_GetSensorInfo(hCam:HIDS)->dict:
+    """Query sensor information for an initialized camera handle.
+
+    Args:
+        hCam: Camera handle created by :func:`is_InitCamera`.
+
+    Returns:
+        dict: Parsed ``SENSORINFO`` fields.
+    """
+    info = SENSORINFO()
+    ret = driver.is_GetSensorInfo(hCam, ct.byref(info))
     uEyeError.test(ret)
 
     return info.to_dict()
@@ -912,8 +1225,10 @@ def getImageFromMem(hCam:HIDS, width:int, height:int):
     return arr.copy()
 
 if __name__ == '__main__':
+    camlist = is_GetCameraList()
+    print('number of cameras:', len(camlist))
+    print(camlist)
+
     hCam = is_InitCamera()
-    print( is_Exposure(hCam, 100) )
-    print( is_Exposure(hCam) )
-    print( exposureGetCapabilities(hCam) )
-    print( exposureGetRange(hCam) )
+    print(is_GetCameraInfo(hCam))
+    print(is_GetSensorInfo(hCam))
