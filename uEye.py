@@ -1,12 +1,30 @@
 # uEye.py
 from __future__ import annotations
 import ctypes as ct
+from pathlib import Path
 import numpy as np
 HIDS    = ct.c_int
 
 # ---- Load DLL ----
-# If needed: driver = WinDLL(r"C:\Windows\System32\uc480_64.dll")
-driver = ct.WinDLL("uc480_64.dll")
+try:
+    # If needed: driver = ct.WinDLL(r"C:\Windows\System32\uc480_64.dll")
+    driver = ct.WinDLL("uc480_64.dll")
+except OSError as err:
+    this_dir = Path(__file__).resolve().parent
+    repo_driver_dir = this_dir / "Olympus-Drivers"
+    msg = (
+        "Could not find required DLL 'uc480_64.dll'.\n"
+        "Install the camera driver for your model from this repository:\n"
+        f"  SCx: {repo_driver_dir / 'SCx'}\n"
+        f"  UC90: {repo_driver_dir / 'UC90'}\n"
+        f"  DP7x: {repo_driver_dir / 'DP7x'}\n"
+        f"  UCx_XCx_XMx: {repo_driver_dir / 'UCx_XCx_XMx'}\n"
+        "Then restart the application."
+    )
+    print(msg)
+    raise OSError(msg) from err
+
+
 # Function prototypes
 driver.is_InitCamera.argtypes      = [ct.POINTER(HIDS), ct.c_void_p]
 driver.is_InitCamera.restype       = ct.c_int
