@@ -276,7 +276,6 @@ class SC30Camera:
         self.depth   = 1
         self.bpp     = 8
         self._exposure_ms = None
-        self._long_exposure_enabled = False
         self._sensor_info = None
 
         self.verbosity = verbosity
@@ -367,16 +366,13 @@ class SC30Camera:
         if set_defaults:
             self.set()
     @_verbose
-    def set(self, colormode:str='MONO8', binning:int=1, exposure_ms:float=0, long_exposure: bool|None=None):
+    def set(self, colormode:str='MONO8', binning:int=1, exposure_ms:float=0):
         """Apply primary acquisition settings and (re)allocate image memory.
 
         Args:
             colormode: uEye monochrome color mode suffix (for example ``MONO8``).
             binning: Hardware binning factor in each dimension.
             exposure_ms: Exposure time in milliseconds. ``0`` queries current value.
-            long_exposure: Exposure mode selection. ``True`` forces long
-                exposure, ``False`` forces normal exposure, and ``None`` lets
-                the SC30 wrapper decide automatically.
 
         Raises:
             NameError: If the camera has not been opened.
@@ -390,7 +386,7 @@ class SC30Camera:
         self._set_color_mode( colormode.upper() )
         for i in range(int(binning)):
             self._set_hardware_binning( i+1 ) # camera seems to prefer to increment binning slowly? Doesn't like going from 1 to 4 after acquiring an image.
-        self._set_exposure(exposure_ms, long_exposure=long_exposure)
+        self._set_exposure(exposure_ms)
         self._allocate_memory()
         self._prev_set_time = time.time()
     @_verbose
@@ -483,33 +479,68 @@ class SC30Camera:
         self.mem_id = None
         self.memory_allocated = False
     @_verbose
-    def _auto_long_exposure(self, ms: float) -> bool:
-        """Decide whether long exposure should be used for a requested value."""
-        if ms <= 0:
-            return self._long_exposure_enabled
+    def _select_pixel_clock_for_exposure(self, ms: float) -> tuple[int, dict]:
+        """Return the pixel clock to use for a requested exposure.
 
-        caps = uEye.exposureGetCapabilities(self.hCam)
-        if not ('IS_EXPOSURE_CAP_LONG_EXPOSURE' in caps):
-            return False
+        Primary rule: choose the fastest pixel clock whose frame-time interval
+        strictly contains the requested exposure, i.e.
+        ``min_frame_time_s < exposure_s < max_frame_time_s``.
 
-        _, max_short_ms, _ = uEye.exposureGetRange(self.hCam, long_exposure=False)
-        return ms > max_short_ms
+        Fallback rule when no interval contains the exposure:
+        - If the fastest available clock's ``min_frame_time_s`` is greater
+          than the requested exposure, choose the fastest clock.
+        - Otherwise, choose the slowest clock.
+
+        Args:
+            ms: Desired exposure in milliseconds.
+
+        Returns:
+            tuple[int, dict]: Chosen pixel clock in MHz and its timing row.
+
+        """
+        exposure_s = float(ms) / 1000.0
+
+        # Evaluate clocks in descending order so the first match is the fastest.
+        sorted_by_speed = sorted(
+            self._TIMING_FUNC_OF_PIXEL_CLOCK_MHZ.items(),
+            key=lambda item: item[0],
+            reverse=True,
+        )
+
+        candidates = [
+            (mhz, timing)
+            for mhz, timing in sorted_by_speed
+            if timing['min_frame_time_s'] < exposure_s < timing['max_frame_time_s']
+        ]
+        if candidates:
+            best_mhz, best_timing = candidates[0]
+            return int(best_mhz), best_timing
+
+        fastest_mhz, fastest_timing = sorted_by_speed[0]
+        slowest_mhz, slowest_timing = sorted_by_speed[-1]
+        if fastest_timing['min_frame_time_s'] > exposure_s:
+            return int(fastest_mhz), fastest_timing
+        return int(slowest_mhz), slowest_timing
     @_verbose
-    def _set_exposure(self, ms:float=0, long_exposure: bool|None=None):
+    def _set_exposure(self, ms:float=0):
         """Set or query exposure and cache the resulting value.
 
         Args:
             ms: Desired exposure in milliseconds; ``0`` reads current exposure.
-            long_exposure: ``True`` forces long mode, ``False`` forces short
-                mode, and ``None`` uses automatic mode selection.
-        """
-        if long_exposure is None:
-            long_exposure = self._auto_long_exposure(float(ms or 0))
 
+        Notes:
+            For non-zero requests, the camera pixel clock is first selected
+            from ``_TIMING_FUNC_OF_PIXEL_CLOCK_MHZ`` using the fastest timing
+            interval containing the exposure, with deterministic fastest/slowest
+            fallback if no interval contains it.
+            After setting pixel clock, frame rate is automatically set to 1/exposure.
+        """
         if ms:
-            self._exposure_ms = uEye.is_Exposure(self.hCam, ms, long_exposure=long_exposure)
-        self._exposure_ms = uEye.is_Exposure(self.hCam, 0, long_exposure=long_exposure)
-        self._long_exposure_enabled = bool(long_exposure)
+            pixel_clock_mhz, timing = self._select_pixel_clock_for_exposure(float(ms))
+            uEye.is_PixelClock(self.hCam, pixel_clock_mhz)
+            uEye.is_Framerate(self.hCam, 1./1000/ms)
+            self._exposure_ms = uEye.is_Exposure(self.hCam, ms)
+        self._exposure_ms = uEye.is_Exposure(self.hCam, 0)
         return self.exposure_ms
     @_verbose
     def _grab_frame(self):
@@ -641,14 +672,17 @@ class SC30Camera:
 # is_SetHWGainFactor ( ... )    100
 # is_PixelClock ( ... )        0'''
 
+
 if __name__ == '__main__':
     sc30 = SC30Camera(verbosity='high')
     sc30.open(False)
     print(sc30.get_camera_info())
     sc30.set(binning=1, exposure_ms=200)
+    print('Exposure actually set to:', sc30.exposure_ms)
 
     arr = sc30.capture_single_frame()
     print('Image mean value:', np.mean(arr))
+    sc30.close()
 
     import matplotlib.pyplot as plt
     plt.matshow(arr, cmap='gray')
