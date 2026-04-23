@@ -35,13 +35,209 @@ class SC30Camera:
     - Exposure, gain, framerate setters
     - Ring buffer capture
     """
-    _WIDTH_PX = 2048
-    _HEIGHT_PX = 1532
+    _SENSOR_WIDTH_PX = 2048
+    _SENSOR_HEIGHT_PX = 1532
+    _PIXEL_SIZE_UM = 3.20
+    _TIMING_FUNC_OF_PIXEL_CLOCK_MHZ = { # prev determined programatically
+        5: {'frame_time_increment_s': 0.0004878,
+            'max_fps': 1.3057455415318484,
+            'max_frame_time_s': 1.7487629999999998,
+            'min_fps': 0.5718327755104609,
+            'min_frame_time_s': 0.765846},
+        6: {'frame_time_increment_s': 0.0004065,
+            'max_fps': 1.5668946498382181,
+            'max_frame_time_s': 1.4573025,
+            'min_fps': 0.686199330612553,
+            'min_frame_time_s': 0.638205},
+        7: {'frame_time_increment_s': 0.0003484285714285714,
+            'max_fps': 1.8280437581445879,
+            'max_frame_time_s': 1.2491164285714285,
+            'min_fps': 0.8005658857146453,
+            'min_frame_time_s': 0.5470328571428571},
+        8: {'frame_time_increment_s': 0.000304875,
+            'max_fps': 2.0891928664509574,
+            'max_frame_time_s': 1.0929768750000002,
+            'min_fps': 0.9149324408167372,
+            'min_frame_time_s': 0.47865375000000004},
+        9: {'frame_time_increment_s': 0.000271,
+            'max_fps': 2.3503419747573275,
+            'max_frame_time_s': 0.9715349999999999,
+            'min_fps': 1.0292989959188295,
+            'min_frame_time_s': 0.42546999999999996},
+        10: {'frame_time_increment_s': 0.0002439,
+            'max_fps': 2.611491083063697,
+            'max_frame_time_s': 0.8743814999999999,
+            'min_fps': 1.1436655510209217,
+            'min_frame_time_s': 0.382923},
+        11: {'frame_time_increment_s': 0.00022172727272727272,
+            'max_fps': 2.8726401913700665,
+            'max_frame_time_s': 0.7948922727272727,
+            'min_fps': 1.2580321061230137,
+            'min_frame_time_s': 0.3481118181818182},
+        12: {'frame_time_increment_s': 0.00020325,
+            'max_fps': 3.1337892996764363,
+            'max_frame_time_s': 0.72865125,
+            'min_fps': 1.372398661225106,
+            'min_frame_time_s': 0.3191025},
+        13: {'frame_time_increment_s': 0.00018761538461538462,
+            'max_fps': 3.394938407982806,
+            'max_frame_time_s': 0.6726011538461539,
+            'min_fps': 1.486765216327198,
+            'min_frame_time_s': 0.29455615384615386},
+        14: {'frame_time_increment_s': 0.0001742142857142857,
+            'max_fps': 3.6560875162891757,
+            'max_frame_time_s': 0.6245582142857142,
+            'min_fps': 1.6011317714292905,
+            'min_frame_time_s': 0.27351642857142855},
+        15: {'frame_time_increment_s': 0.0001626,
+            'max_fps': 3.917236624595545,
+            'max_frame_time_s': 0.582921,
+            'min_fps': 1.7154983265313823,
+            'min_frame_time_s': 0.255282},
+        16: {'frame_time_increment_s': 0.0001524375,
+            'max_fps': 4.178385732901915,
+            'max_frame_time_s': 0.5464884375000001,
+            'min_fps': 1.8298648816334744,
+            'min_frame_time_s': 0.23932687500000002},
+        17: {'frame_time_increment_s': 0.0001434705882352941,
+            'max_fps': 4.439534841208285,
+            'max_frame_time_s': 0.5143420588235293,
+            'min_fps': 1.944231436735567,
+            'min_frame_time_s': 0.22524882352941175},
+        18: {'frame_time_increment_s': 0.0001355,
+            'max_fps': 4.700683949514655,
+            'max_frame_time_s': 0.48576749999999996,
+            'min_fps': 2.058597991837659,
+            'min_frame_time_s': 0.21273499999999998},
+        19: {'frame_time_increment_s': 0.00012836842105263158,
+            'max_fps': 4.961833057821024,
+            'max_frame_time_s': 0.4602007894736842,
+            'min_fps': 2.172964546939751,
+            'min_frame_time_s': 0.2015384210526316},
+        20: {'frame_time_increment_s': 0.00012195,
+            'max_fps': 5.222982166127394,
+            'max_frame_time_s': 0.43719074999999996,
+            'min_fps': 2.2873311020418434,
+            'min_frame_time_s': 0.1914615},
+        21: {'frame_time_increment_s': 0.00011614285714285714,
+            'max_fps': 5.484131274433763,
+            'max_frame_time_s': 0.41637214285714286,
+            'min_fps': 2.4016976571439352,
+            'min_frame_time_s': 0.1823442857142857},
+        22: {'frame_time_increment_s': 0.00011086363636363636,
+            'max_fps': 5.745280382740133,
+            'max_frame_time_s': 0.39744613636363635,
+            'min_fps': 2.5160642122460275,
+            'min_frame_time_s': 0.1740559090909091},
+        23: {'frame_time_increment_s': 0.00010604347826086956,
+            'max_fps': 6.006429491046503,
+            'max_frame_time_s': 0.38016586956521736,
+            'min_fps': 2.63043076734812,
+            'min_frame_time_s': 0.16648826086956522},
+        24: {'frame_time_increment_s': 0.000101625,
+            'max_fps': 6.2675785993528725,
+            'max_frame_time_s': 0.364325625,
+            'min_fps': 2.744797322450212,
+            'min_frame_time_s': 0.15955125},
+        25: {'frame_time_increment_s': 9.756e-05,
+            'max_fps': 6.528727707659243,
+            'max_frame_time_s': 0.34975259999999997,
+            'min_fps': 2.8591638775523043,
+            'min_frame_time_s': 0.15316919999999998},
+        26: {'frame_time_increment_s': 9.380769230769231e-05,
+            'max_fps': 6.789876815965612,
+            'max_frame_time_s': 0.33630057692307697,
+            'min_fps': 2.973530432654396,
+            'min_frame_time_s': 0.14727807692307693},
+        27: {'frame_time_increment_s': 9.033333333333334e-05,
+            'max_fps': 7.051025924271982,
+            'max_frame_time_s': 0.323845,
+            'min_fps': 3.0878969877564884,
+            'min_frame_time_s': 0.14182333333333333},
+        28: {'frame_time_increment_s': 8.710714285714285e-05,
+            'max_fps': 7.312175032578351,
+            'max_frame_time_s': 0.3122791071428571,
+            'min_fps': 3.202263542858581,
+            'min_frame_time_s': 0.13675821428571427},
+        29: {'frame_time_increment_s': 8.410344827586207e-05,
+            'max_fps': 7.573324140884721,
+            'max_frame_time_s': 0.30151086206896555,
+            'min_fps': 3.3166300979606724,
+            'min_frame_time_s': 0.13204241379310344},
+        30: {'frame_time_increment_s': 8.13e-05,
+            'max_fps': 7.83447324919109,
+            'max_frame_time_s': 0.2914605,
+            'min_fps': 3.4309966530627647,
+            'min_frame_time_s': 0.127641},
+        31: {'frame_time_increment_s': 7.867741935483872e-05,
+            'max_fps': 8.09562235749746,
+            'max_frame_time_s': 0.2820585483870968,
+            'min_fps': 3.5453632081648565,
+            'min_frame_time_s': 0.12352354838709678},
+        32: {'frame_time_increment_s': 7.621875e-05,
+            'max_fps': 8.35677146580383,
+            'max_frame_time_s': 0.27324421875000005,
+            'min_fps': 3.6597297632669488,
+            'min_frame_time_s': 0.11966343750000001},
+        33: {'frame_time_increment_s': 7.390909090909091e-05,
+            'max_fps': 8.6179205741102,
+            'max_frame_time_s': 0.2649640909090909,
+            'min_fps': 3.7740963183690415,
+            'min_frame_time_s': 0.11603727272727273},
+        34: {'frame_time_increment_s': 7.173529411764706e-05,
+            'max_fps': 8.87906968241657,
+            'max_frame_time_s': 0.2571710294117647,
+            'min_fps': 3.888462873471134,
+            'min_frame_time_s': 0.11262441176470588},
+        35: {'frame_time_increment_s': 6.968571428571428e-05,
+            'max_fps': 9.14021879072294,
+            'max_frame_time_s': 0.24982328571428572,
+            'min_fps': 4.002829428573226,
+            'min_frame_time_s': 0.10940657142857142},
+        36: {'frame_time_increment_s': 6.775e-05,
+            'max_fps': 9.40136789902931,
+            'max_frame_time_s': 0.24288374999999998,
+            'min_fps': 4.117195983675318,
+            'min_frame_time_s': 0.10636749999999999},
+        37: {'frame_time_increment_s': 6.591891891891892e-05,
+            'max_fps': 9.662517007335678,
+            'max_frame_time_s': 0.23631932432432431,
+            'min_fps': 4.2315625387774105,
+            'min_frame_time_s': 0.10349270270270271},
+        38: {'frame_time_increment_s': 6.418421052631579e-05,
+            'max_fps': 9.923666115642048,
+            'max_frame_time_s': 0.2301003947368421,
+            'min_fps': 4.345929093879502,
+            'min_frame_time_s': 0.1007692105263158},
+        39: {'frame_time_increment_s': 6.253846153846153e-05,
+            'max_fps': 10.18481522394842,
+            'max_frame_time_s': 0.2242003846153846,
+            'min_fps': 4.460295648981595,
+            'min_frame_time_s': 0.0981853846153846},
+        40: {'frame_time_increment_s': 6.0975e-05,
+            'max_fps': 10.445964332254787,
+            'max_frame_time_s': 0.21859537499999998,
+            'min_fps': 4.574662204083687,
+            'min_frame_time_s': 0.09573075},
+        41: {'frame_time_increment_s': 5.948780487804878e-05,
+            'max_fps': 10.707113440561157,
+            'max_frame_time_s': 0.21326378048780487,
+            'min_fps': 4.689028759185779,
+            'min_frame_time_s': 0.09339585365853659},
+        42: {'frame_time_increment_s': 5.807142857142857e-05,
+            'max_fps': 10.968262548867527,
+            'max_frame_time_s': 0.20818607142857143,
+            'min_fps': 4.8033953142878705,
+            'min_frame_time_s': 0.09117214285714285},
+        43: {'frame_time_increment_s': 5.672093023255814e-05,
+            'max_fps': 11.229411657173896,
+            'max_frame_time_s': 0.20334453488372092,
+            'min_fps': 4.917761869389963,
+            'min_frame_time_s': 0.08905186046511628}}
     def __init__(self, ring_size=4, verbosity:str=None):
         """Initialize camera state, acquisition settings, and ring buffer.
-        I think the camera/sensor information can be found [here](https://www.1stvision.com/cameras/IDS/IDS-manuals/uEye_Manual/sensor-data-ui-146x.html).
-        (That matches the expected pixel size (3.20 um, square), sensor size (2048x1536 px), and number of bits (10).
-        This camera is CMOS.)
+        The camera/sensor information can be found [here](https://www.1stvision.com/cameras/IDS/IDS-manuals/uEye_Manual/sensor-data-ui-146x.html).
+        (UI1465_C, QXGA rolling shutter, color, LE model)
 
         Application notes from IDS:
 
@@ -101,13 +297,13 @@ class SC30Camera:
             ValueError: If ``self.binning`` is outside supported factors.
         """
         if self.binning == 1:
-            return self._HEIGHT_PX
+            return self._SENSOR_HEIGHT_PX
         elif self.binning == 2:
-            return self._HEIGHT_PX//2+2
+            return self._SENSOR_HEIGHT_PX//2+2
         elif self.binning == 3:
-            return self._HEIGHT_PX//3+2
+            return self._SENSOR_HEIGHT_PX//3+2
         elif self.binning == 4:
-            return self._HEIGHT_PX//4+1
+            return self._SENSOR_HEIGHT_PX//4+1
         else:
             raise ValueError('Binning value should only be 1, 2, 3, or 4!')
     @property
@@ -118,11 +314,11 @@ class SC30Camera:
             ValueError: If ``self.binning`` is outside supported factors.
         """
         if self.binning in (1,2):
-            return self._WIDTH_PX//self.binning
+            return self._SENSOR_WIDTH_PX//self.binning
         elif self.binning == 3:
-            return self._WIDTH_PX//self.binning-2
+            return self._SENSOR_WIDTH_PX//self.binning-2
         elif self.binning == 4:
-            return self._WIDTH_PX//self.binning-4
+            return self._SENSOR_WIDTH_PX//self.binning-4
         else:
             raise ValueError('Binning value should only be 1, 2, 3, or 4!')
     @property
@@ -208,7 +404,7 @@ class SC30Camera:
     @_verbose
     def _set_AOI(self):
         """Set area of interest to full sensor extents."""
-        uEye.is_AOI(self.hCam, 0,0, self._WIDTH_PX, self._HEIGHT_PX)
+        uEye.is_AOI(self.hCam, 0,0, self._SENSOR_WIDTH_PX, self._SENSOR_HEIGHT_PX)
     @_verbose
     def _set_color_mode(self, mode:str='MONO8'):
         """Configure color mode and derive internal pixel-depth metadata.
