@@ -79,8 +79,14 @@ class _code_str_pair:
     def __getitem__(self, key:int|str):
         if isinstance(key, int):
             return self.meanings[self.codes.index(key)]
-        if isinstance(key, int):
-            return self.codes[self.meanings.index(key)]
+        if isinstance(key, str):
+            try:
+                return self.codes[self.meanings.index(key)]
+            except:
+                for c,m in zip(self.codes,self.meanings):
+                    if m.startswith(key):
+                        return c
+        raise IndexError(f'Could not find key {key}')
     def get(self, code_or_meaning:int|str, default:str|int=None):
         if default is None:
             return self[code_or_meaning]
@@ -698,7 +704,7 @@ def is_InitCamera(hCam:HIDS=None)->HIDS:
     ret = driver.is_InitCamera(ct.byref(hCam), None)
     uEyeError.test(ret, 
                    (RETURN_CODES.get('IS_SUCCESS'), 
-                    RETURN_CODES.get('IS_INVALID_HANDLE')))
+                    RETURN_CODES.get('IS_INVALID_CAMERA_HANDLE')))
     return hCam
 def is_ExitCamera(hCam:HIDS):
     """Close an initialized camera handle.
@@ -1099,7 +1105,12 @@ def exposureGetCapabilities(hCam: HIDS) -> int:
                       ct.byref(caps),
                       ct.sizeof(caps))
     uEyeError.test(ret)
-    return caps.value
+
+    caps_list = []
+    for elem in ('IS_EXPOSURE_CAP_EXPOSURE', 'IS_EXPOSURE_CAP_FINE_INCREMENT', 'IS_EXPOSURE_CAP_LONG_EXPOSURE'):
+        if EXPOSURE_CODES.get(elem) & caps.value:
+            caps_list.append(elem)
+    return caps_list
 def exposureGetLongExposureEnabled(hCam: HIDS) -> bool | None:
     """Return whether long-exposure mode is enabled.
 
@@ -1111,8 +1122,7 @@ def exposureGetLongExposureEnabled(hCam: HIDS) -> bool | None:
                              ct.byref(enabled),
                              ct.sizeof(enabled))
     if ret in (RETURN_CODES.get('IS_NOT_SUPPORTED'), 
-               RETURN_CODES.get('IS_INVALID_PARAMETER'), 
-               RETURN_CODES.get('IS_INVALID_PARAMETER_VALUE')):
+               RETURN_CODES.get('IS_INVALID_PARAMETER')):
         return None
     uEyeError.test(ret)
     return bool(enabled.value)
@@ -1131,8 +1141,6 @@ def exposureSetLongExposureEnabled(hCam: HIDS, enable: bool) -> bool:
     if ret in (
         RETURN_CODES.get('IS_NOT_SUPPORTED'),
         RETURN_CODES.get('IS_INVALID_PARAMETER'),
-        RETURN_CODES.get('IS_INVALID_PARAMETER_VALUE'),
-        RETURN_CODES.get('IS_FEATURE_NOT_SUPPORTED_BY_SENSOR'),
     ):
         return False
     uEyeError.test(ret)
@@ -1143,8 +1151,7 @@ def exposureGetLongRange(hCam: HIDS) -> tuple[float, float, float] | None:
     Returns ``None`` if unsupported.
     """
     unsupported_codes = (RETURN_CODES.get('IS_NOT_SUPPORTED'), 
-                         RETURN_CODES.get('IS_INVALID_PARAMETER'), 
-                         RETURN_CODES.get('IS_INVALID_PARAMETER_VALUE'))
+                         RETURN_CODES.get('IS_INVALID_PARAMETER'))
 
     prev_long_enabled = exposureGetLongExposureEnabled(hCam)
     long_mode_changed = False

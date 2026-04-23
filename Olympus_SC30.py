@@ -1,3 +1,4 @@
+from __future__ import annotations
 import numpy as np
 import threading
 import time
@@ -22,7 +23,14 @@ def _verbose(func):
         if self.verbosity is None:
             pass
         elif self.verbosity == 'high':
-            string = ','.join([repr(v) for v in args]) + ','.join([f'{k}={repr(e)}' for k,e in kwargs.items()])
+            string1 = ', '.join([repr(v) for v in args]) 
+            string2 = ', '.join([f'{k}={repr(e)}' for k,e in kwargs.items()])
+
+            if string1 and string2:
+                string = string1 + ', ' + string2
+            else:
+                string = string1 + string2
+
             print(f"INFO: Calling {self.__class__.__name__}.{func.__name__}({string})")
 
         return func(self, *args, **kwargs)
@@ -481,7 +489,7 @@ class SC30Camera:
             return self._long_exposure_enabled
 
         caps = uEye.exposureGetCapabilities(self.hCam)
-        if not (caps & uEye.IS_EXPOSURE_CAP_LONG_EXPOSURE):
+        if not ('IS_EXPOSURE_CAP_LONG_EXPOSURE' in caps):
             return False
 
         _, max_short_ms, _ = uEye.exposureGetRange(self.hCam, long_exposure=False)
