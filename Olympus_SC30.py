@@ -268,6 +268,8 @@ class SC30Camera:
         self.depth   = 1
         self.bpp     = 8
         self._exposure_ms = None
+        self._long_exposure_enabled = False
+        self._sensor_info = None
 
         self.verbosity = verbosity
         if self.verbosity is None:
@@ -357,13 +359,16 @@ class SC30Camera:
         if set_defaults:
             self.set()
     @_verbose
-    def set(self, colormode:str='MONO8', binning:int=1, exposure_ms:float=0):
+    def set(self, colormode:str='MONO8', binning:int=1, exposure_ms:float=0, long_exposure: bool|None=None):
         """Apply primary acquisition settings and (re)allocate image memory.
 
         Args:
             colormode: uEye monochrome color mode suffix (for example ``MONO8``).
             binning: Hardware binning factor in each dimension.
             exposure_ms: Exposure time in milliseconds. ``0`` queries current value.
+            long_exposure: Exposure mode selection. ``True`` forces long
+                exposure, ``False`` forces normal exposure, and ``None`` lets
+                the SC30 wrapper decide automatically.
 
         Raises:
             NameError: If the camera has not been opened.
@@ -377,7 +382,7 @@ class SC30Camera:
         self._set_color_mode( colormode.upper() )
         for i in range(int(binning)):
             self._set_hardware_binning( i+1 ) # camera seems to prefer to increment binning slowly? Doesn't like going from 1 to 4 after acquiring an image.
-        self._set_exposure(exposure_ms)
+        self._set_exposure(exposure_ms, long_exposure=long_exposure)
         self._allocate_memory()
         self._prev_set_time = time.time()
     @_verbose
@@ -470,15 +475,33 @@ class SC30Camera:
         self.mem_id = None
         self.memory_allocated = False
     @_verbose
-    def _set_exposure(self, ms:float=0):
+    def _auto_long_exposure(self, ms: float) -> bool:
+        """Decide whether long exposure should be used for a requested value."""
+        if ms <= 0:
+            return self._long_exposure_enabled
+
+        caps = uEye.exposureGetCapabilities(self.hCam)
+        if not (caps & uEye.IS_EXPOSURE_CAP_LONG_EXPOSURE):
+            return False
+
+        _, max_short_ms, _ = uEye.exposureGetRange(self.hCam, long_exposure=False)
+        return ms > max_short_ms
+    @_verbose
+    def _set_exposure(self, ms:float=0, long_exposure: bool|None=None):
         """Set or query exposure and cache the resulting value.
 
         Args:
-            ms: Desired exposure in milliseconds; ``0`` reads current exposure and updates internally without overriding.
+            ms: Desired exposure in milliseconds; ``0`` reads current exposure.
+            long_exposure: ``True`` forces long mode, ``False`` forces short
+                mode, and ``None`` uses automatic mode selection.
         """
+        if long_exposure is None:
+            long_exposure = self._auto_long_exposure(float(ms or 0))
+
         if ms:
-            self._exposure_ms = uEye.is_Exposure(self.hCam, ms) # set exposure if non-zero
-        self._exposure_ms = uEye.is_Exposure(self.hCam, 0) # read back exposure
+            self._exposure_ms = uEye.is_Exposure(self.hCam, ms, long_exposure=long_exposure)
+        self._exposure_ms = uEye.is_Exposure(self.hCam, 0, long_exposure=long_exposure)
+        self._long_exposure_enabled = bool(long_exposure)
         return self.exposure_ms
     @_verbose
     def _grab_frame(self):
